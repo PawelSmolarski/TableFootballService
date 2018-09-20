@@ -16,16 +16,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-//@ExtendWith(SpringExtension.class)
 class AccountIntegrationTest {
     private MockMvc mockMvc;
-
-    //        @Autowired
-//        AccountController accountController;
-//    @InjectMocks //todo ps moze to
-//    todo ps problem bo uzywa bazy produkcyjnej co jest logiczne
-    private AccountController accountController = new AccountController(new AccountConfiguration().accountFacade());
-    private GlobalControllerExceptionHandler globalControllerExceptionHandler = new GlobalControllerExceptionHandler();
+    private final AccountController accountController = new AccountController(new AccountConfiguration().accountFacade());
+    private final GlobalControllerExceptionHandler globalControllerExceptionHandler = new GlobalControllerExceptionHandler();
 
     @BeforeEach
     void setup() {
@@ -85,5 +79,18 @@ class AccountIntegrationTest {
                 .content(SampleAccounts.USER_ADMIN.toJsonWithoutId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()); // todo ps sprawdzanie jsona
+    }
+
+    @Test
+    @DisplayName("Should throw 400 when we try to login with incorrect data")
+    void shouldThrowBadRequestWithInvalidData() throws Exception {
+        mockMvc.perform(post("/account")
+                .content(SampleAccounts.USER_ADMIN.toJsonWithoutId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/accounts/login").content(SampleAccounts.USER_INVALID_ADMIN.toJsonWithoutId())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 }

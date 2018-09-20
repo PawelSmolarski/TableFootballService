@@ -6,7 +6,9 @@ import pawelsmolarski95.gmail.com.tablefootball.domain.account.dto.AccountDto;
 
 enum SampleAccounts {
     USER_ADMIN(createSampleAccountDto(1, "admin", "admin")),
-    USER_GUEST(createSampleAccountDto(2, "guest", "guest"));
+    USER_GUEST(createSampleAccountDto(2, "guest", "guest")),
+    USER_INVALID_ADMIN(createSampleAccountDto(3, "admin", "invalid"));
+
 
     private final AccountDto sampleAccountDto;
 
@@ -30,4 +32,5 @@ enum SampleAccounts {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(getSampleAccountDto());
     }
+
 }

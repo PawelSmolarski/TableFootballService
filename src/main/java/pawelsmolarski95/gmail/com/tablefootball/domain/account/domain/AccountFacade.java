@@ -4,6 +4,7 @@ import org.springframework.lang.NonNull;
 import pawelsmolarski95.gmail.com.tablefootball.domain.account.dto.AccountDto;
 import pawelsmolarski95.gmail.com.tablefootball.domain.account.dto.TokenDto;
 import pawelsmolarski95.gmail.com.tablefootball.infrastructure.authentication.Encryptor;
+import pawelsmolarski95.gmail.com.tablefootball.infrastructure.exception.BadRequestException;
 import pawelsmolarski95.gmail.com.tablefootball.infrastructure.exception.NotFoundException;
 import pawelsmolarski95.gmail.com.tablefootball.infrastructure.exception.ResourceConflictException;
 
@@ -17,7 +18,7 @@ public class AccountFacade {
     private final AccountCreator accountCreator;
     private final AccountRepository accountRepository;
     private final Encryptor accountEncryptor;
-    private final AccountValidator accountValidator;
+    private final AccountValidator accountValidator; // todo ps
 
     public AccountFacade(AccountCreator accountCreator, AccountRepository accountRepository, Encryptor accountEncryptor, AccountValidator accountValidator) {
         this.accountCreator = accountCreator;
@@ -60,9 +61,10 @@ public class AccountFacade {
 
     public TokenDto login(AccountDto accountDto) {
         requireNonNullBadRequest(accountDto);
-        accountEncryptor.matches(accountDto.getPassword(), findOneByName(accountDto).getPassword());
-
-        return TokenDto.builder().token("EXAMPLE TOKEN").accountDto(accountDto).build();
+        if (accountEncryptor.matches(accountDto.getPassword(), findOneByName(accountDto).getPassword()))
+            return TokenDto.builder().token("EXAMPLE TOKEN").accountDto(accountDto).build();
+        else
+            throw new BadRequestException("Username or password is invalid");
     }
 
     private AccountDto modifyWithEncodedPassword(AccountDto accountDto) {

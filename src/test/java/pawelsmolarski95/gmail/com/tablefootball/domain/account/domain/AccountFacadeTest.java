@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pawelsmolarski95.gmail.com.tablefootball.domain.account.dto.AccountDto;
 import pawelsmolarski95.gmail.com.tablefootball.domain.account.dto.TokenDto;
+import pawelsmolarski95.gmail.com.tablefootball.infrastructure.exception.BadRequestException;
 import pawelsmolarski95.gmail.com.tablefootball.infrastructure.exception.NotFoundException;
 import pawelsmolarski95.gmail.com.tablefootball.infrastructure.exception.ResourceConflictException;
 
@@ -29,13 +30,13 @@ class AccountFacadeTest {
     }
 
     @Test
-    @DisplayName("Should throw 404 because resource is not added")
+    @DisplayName("Should throw NotFoundException because resource is not added")
     void shouldNotFoundAccount() {
         assertThrows(NotFoundException.class, () -> accountFacade.findOne(SampleAccounts.USER_ADMIN.getSampleAccountDto()));
     }
 
     @Test
-    @DisplayName("Should throw 409 because resource is already added")
+    @DisplayName("Should throw ResourceConflictException because resource is already added")
     void shouldThrowConflictAccount() {
         AccountDto sampleAdminAccountDto = SampleAccounts.USER_ADMIN.getSampleAccountDto();
         accountFacade.add(sampleAdminAccountDto);
@@ -43,7 +44,7 @@ class AccountFacadeTest {
     }
 
     @Test
-    @DisplayName("Should throw 404 during trying to log in because resource is not added")
+    @DisplayName("Should throw NotFoundException during trying to log in because resource is not added")
     void shouldNotFoundAccountLogIn() {
         assertThrows(NotFoundException.class, () -> accountFacade.login(SampleAccounts.USER_ADMIN.getSampleAccountDto()));
     }
@@ -56,5 +57,13 @@ class AccountFacadeTest {
         TokenDto tokenDto = accountFacade.login(sampleAdminAccountDto);
         assertNotNull(tokenDto);
         assertEquals(tokenDto.getAccountDto().getId(), sampleAdminAccountDto.getId());
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when we try to log in with invalid data")
+    void shouldNotLogIn() {
+        AccountDto sampleAdminAccountDto = SampleAccounts.USER_ADMIN.getSampleAccountDto();
+        accountFacade.add(sampleAdminAccountDto);
+        assertThrows(BadRequestException.class, () -> accountFacade.login(SampleAccounts.USER_INVALID_ADMIN.getSampleAccountDto()));
     }
 }

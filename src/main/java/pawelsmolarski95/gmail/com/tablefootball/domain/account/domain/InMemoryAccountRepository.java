@@ -4,7 +4,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import pawelsmolarski95.gmail.com.tablefootball.domain.account.dto.AccountDto;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +13,7 @@ import java.util.function.Predicate;
 import static java.util.Objects.requireNonNull;
 
 class InMemoryAccountRepository implements AccountRepository {
-    private ConcurrentHashMap<Integer, Account> map = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, Account> map = new ConcurrentHashMap<>();
     private final AccountCreator accountCreator;
 
     InMemoryAccountRepository(AccountCreator accountCreator) {
