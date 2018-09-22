@@ -18,7 +18,7 @@ public class AccountFacade {
     private final AccountCreator accountCreator;
     private final AccountRepository accountRepository;
     private final Encryptor accountEncryptor;
-    private final AccountValidator accountValidator; // todo ps
+    private final AccountValidator accountValidator;
 
     public AccountFacade(AccountCreator accountCreator, AccountRepository accountRepository, Encryptor accountEncryptor, AccountValidator accountValidator) {
         this.accountCreator = accountCreator;
@@ -28,7 +28,7 @@ public class AccountFacade {
     }
 
     public AccountDto add(@NonNull AccountDto accountDto) {
-        requireNonNullBadRequest(accountDto);
+        validateAccount(accountDto);
         accountDto = modifyWithEncodedPassword(accountDto);
         Account account = accountCreator.from(accountDto);
         validateIfExistsAccountByName(accountDto);
@@ -38,21 +38,21 @@ public class AccountFacade {
     }
 
     public AccountDto findOne(@NonNull final AccountDto accountDto) {
-        requireNonNullBadRequest(accountDto);
+        validateAccount(accountDto);
         Optional<Account> account = accountRepository.findById(accountDto.getId());
 
         return account.orElseThrow(NotFoundException::new).toDto();
     }
 
     private AccountDto findOneByName(@NonNull final AccountDto accountDto) {
-        requireNonNullBadRequest(accountDto);
+        validateAccount(accountDto);
         Optional<Account> account = accountRepository.findByName(accountDto.getName());
 
         return account.orElseThrow(() -> new NotFoundException("User not found")).toDto();
     }
 
     private void validateIfExistsAccountByName(@NonNull final AccountDto accountDto) {
-        requireNonNullBadRequest(accountDto);
+        validateAccount(accountDto);
         Optional<Account> account = accountRepository.findByName(accountDto.getName());
 
         if (account.isPresent())
@@ -60,7 +60,7 @@ public class AccountFacade {
     }
 
     public TokenDto login(AccountDto accountDto) {
-        requireNonNullBadRequest(accountDto);
+        validateAccount(accountDto);
         if (accountEncryptor.matches(accountDto.getPassword(), findOneByName(accountDto).getPassword()))
             return TokenDto.builder().token("EXAMPLE TOKEN").accountDto(accountDto).build();
         else
@@ -71,5 +71,11 @@ public class AccountFacade {
         String encodedPassword = accountEncryptor.encrypt(accountDto.getPassword());
         accountDto = accountDto.toBuilder().password(encodedPassword).build();
         return accountDto;
+    }
+
+    private void validateAccount(AccountDto accountDto) {
+        requireNonNullBadRequest(accountDto);
+        if(!accountValidator.validateAccount(accountDto))
+            throw new BadRequestException("Username or password is invalid");
     }
 }
