@@ -31,7 +31,7 @@ class AccountIntegrationTest {
     @Test
     @DisplayName("Should throw 400 Bad Request when we try to add account and request body is null")
     void shouldThrowBadRequest() throws Exception {
-        mockMvc.perform(post("/account").content("") // todo ps spring sam rzuca 400
+        mockMvc.perform(post("/account").content("")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
