@@ -7,8 +7,9 @@ import pawelsmolarski95.gmail.com.tablefootball.domain.account.dto.AccountDto;
 enum SampleAccounts {
     USER_ADMIN(createSampleAccountDto(1, "admin", "admin")),
     USER_GUEST(createSampleAccountDto(2, "guest", "guest")),
-    USER_INVALID_ADMIN(createSampleAccountDto(3, "admin", "invalid"));
-
+    USER_INVALID_ADMIN(createSampleAccountDto(3, "admin", "invalid")),
+    USER_NULL_NAME(createSampleAccountDto(4, null, "test")),
+    USER_NULL_PASSWORD(createSampleAccountDto(4, "test", null));
 
     private final AccountDto sampleAccountDto;
 

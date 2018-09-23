@@ -66,4 +66,16 @@ class AccountFacadeTest {
         accountFacade.add(sampleAdminAccountDto);
         assertThrows(BadRequestException.class, () -> accountFacade.login(SampleAccounts.USER_INVALID_ADMIN.getSampleAccountDto()));
     }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when we try to log in with null username")
+    void shouldNotLogInWhenUsernameIsNull() {
+        assertThrows(BadRequestException.class, () -> accountFacade.login(SampleAccounts.USER_NULL_NAME.getSampleAccountDto()));
+    }
+
+    @Test
+    @DisplayName("Should throw BadRequestException when we try to log in with null username")
+    void shouldNotLogInWhenPasswordIsNull() {
+        assertThrows(BadRequestException.class, () -> accountFacade.login(SampleAccounts.USER_NULL_PASSWORD.getSampleAccountDto()));
+    }
 }
