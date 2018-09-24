@@ -40,12 +40,12 @@ class AccountIntegrationTest {
     @DisplayName("Should throw 409 Conflict when we try to add user that names already exists")
     void shouldThrowConflict() throws Exception {
         mockMvc.perform(post("/account")
-                .content(SampleAccounts.USER_ADMIN.toJsonWithId())
+                .content(SampleAccounts.USER_NORMAL.toJsonWithId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful());
 
         mockMvc.perform(post("/account")
-                .content(SampleAccounts.USER_ADMIN.toJsonWithId())
+                .content(SampleAccounts.USER_NORMAL.toJsonWithId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict());
     }
@@ -54,7 +54,7 @@ class AccountIntegrationTest {
     @DisplayName("Should return 200 when we try to add account")
     void shouldAddAccount() throws Exception {
         mockMvc.perform(post("/account")
-                .content(SampleAccounts.USER_ADMIN.toJsonWithoutId())
+                .content(SampleAccounts.USER_NORMAL.toJsonWithoutId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -62,7 +62,7 @@ class AccountIntegrationTest {
     @Test
     @DisplayName("Should throw 404 when we try to login to not existing account")
     void shouldThrowNotFoundWithNotExistingAccount() throws Exception {
-        mockMvc.perform(post("/accounts/login").content(SampleAccounts.USER_ADMIN.toJsonWithoutId())
+        mockMvc.perform(post("/accounts/login").content(SampleAccounts.USER_NORMAL.toJsonWithoutId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -71,12 +71,12 @@ class AccountIntegrationTest {
     @DisplayName("Should return 200 when we try to login account with appropriate data")
     void shouldLogInAccount() throws Exception {
         mockMvc.perform(post("/account")
-                .content(SampleAccounts.USER_ADMIN.toJsonWithoutId())
+                .content(SampleAccounts.USER_NORMAL.toJsonWithoutId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         mockMvc.perform(post("/accounts/login")
-                .content(SampleAccounts.USER_ADMIN.toJsonWithoutId())
+                .content(SampleAccounts.USER_NORMAL.toJsonWithoutId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()); // todo ps sprawdzanie jsona
     }
@@ -85,7 +85,7 @@ class AccountIntegrationTest {
     @DisplayName("Should throw 400 when we try to login with incorrect data")
     void shouldThrowBadRequestWithInvalidData() throws Exception {
         mockMvc.perform(post("/account")
-                .content(SampleAccounts.USER_ADMIN.toJsonWithoutId())
+                .content(SampleAccounts.USER_NORMAL.toJsonWithoutId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
