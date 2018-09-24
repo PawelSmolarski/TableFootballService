@@ -1,7 +1,6 @@
 package pawelsmolarski95.gmail.com.tablefootball.domain.account.domain;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 class InMemoryRoleRepository implements RoleRepository {
     @Override
@@ -11,6 +10,6 @@ class InMemoryRoleRepository implements RoleRepository {
 
     @Override
     public Optional<List<Role>> findRolesByAccounts(Account account) {
-        return Optional.empty(); //todo ps
+        return Optional.of(new ArrayList<>(account.toDto().getRoles()));
     }
 }
